@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E0161E47-E7DE-42CA-B8AE-FC4EA77BF9BE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Machine.Specifications.DevelopWithPassion.Specs</RootNamespace>
+    <AssemblyName>Machine.Specifications.DevelopWithPassion.Specs</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Build\Debug\Tests\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.DynamicProxy2, Version=2.1.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Tools\Castle\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.6.0.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Tools\rhino.mocks\Rhino.Mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssertionExtensionsSpecs.cs" />
+    <Compile Include="ChangeSpecs.cs" />
+    <Compile Include="FieldMemberTargetSpecs.cs" />
+    <Compile Include="FieldReassignmentStartExpressionSpecs.cs" />
+    <Compile Include="FieldSwitcherFactorySpecs.cs" />
+    <Compile Include="FieldSwitcherImplementationSpecs.cs" />
+    <Compile Include="MemberTargetRegistrySpecs.cs" />
+    <Compile Include="PipelineBehaviourSpecs.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyInfoTargetSpecs.cs" />
+    <Compile Include="StringExtensionsSpecs.cs" />
+    <Compile Include="SutObservationContractSpecs.cs" />
+    <Compile Include="SystemUnderTestDependencyBuilderSpecs.cs" />
+    <Compile Include="SystemUnderTestFactorySpecs.cs" />
+    <Compile Include="TypeCastingExtensionsSpecs.cs" />
+    <Compile Include="TypeExtensionsSpecs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Machine.Specifications.DevelopWithPassion.Rhino\Machine.Specifications.DevelopWithPassion.Rhino.csproj">
+      <Project>{502C0B17-97B8-4484-979E-89382C86E661}</Project>
+      <Name>Machine.Specifications.DevelopWithPassion.Rhino</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Machine.Specifications.DevelopWithPassion\Machine.Specifications.DevelopWithPassion.csproj">
+      <Project>{1E9A495C-6BFB-4E50-8F53-757CF8DA3EC1}</Project>
+      <Name>Machine.Specifications.DevelopWithPassion</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Machine.Specifications\Machine.Specifications.csproj">
+      <Project>{CCD02629-1262-4F78-9E9F-AC97B942D0E7}</Project>
+      <Name>Machine.Specifications</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

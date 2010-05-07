@@ -1,202 +1,227 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Machine.Specifications.Specs
 {
-  public static class tag
-  {
-    public const string example = "example";
-    public const string some_other_tag = "some other tag";
-    public const string one_more_tag = "one more tag";
-  }
+    public static class tag
+    {
+        public const string example = "example";
+        public const string some_other_tag = "some other tag";
+        public const string one_more_tag = "one more tag";
+    }
 
-  [SetupForEachSpecification, Tags(tag.example)]
-  public class context_with_multiple_specifications_and_setup_for_each
-  {
-    public static int EstablishRunCount;
-    public static int BecauseClauseRunCount;
+    [SetupForEachSpecification, Tags(tag.example)]
+    public class context_with_multiple_specifications_and_setup_for_each
+    {
+        public static int EstablishRunCount;
+        public static int BecauseClauseRunCount;
 
-    Establish context = () => EstablishRunCount++;
+        Establish context = () => EstablishRunCount++;
 
-    Because of = () => BecauseClauseRunCount++;
+        Because of = () => BecauseClauseRunCount++;
 
-    It spec1 = () => { };
-    It spec2 = () => { };
-  }
+        It spec1 = () =>
+        {
+        };
 
-  [Tags(tag.example, "foobar")]
-  public class context_with_multiple_specifications
-  {
-    public static int EstablishRunCount;
-    public static int BecauseClauseRunCount;
+        It spec2 = () =>
+        {
+            EstablishRunCount.ShouldEqual(2);
+        };
+    }
 
-    Establish context = () => EstablishRunCount++;
+    [Tags(tag.example, "foobar")]
+    public class context_with_multiple_specifications
+    {
+        public static int EstablishRunCount;
+        public static int BecauseClauseRunCount;
 
-    Because of = () => BecauseClauseRunCount++;
+        Establish context = () => EstablishRunCount++;
 
-    It spec1 = () => { };
-    It spec2 = () => { };
-  }
+        Because of = () => BecauseClauseRunCount++;
 
-  [Tags(tag.example, tag.example)]
-  [Tags(tag.example)]
-  public class context_with_duplicate_tags
-  {
-    It bla_bla = () => { };
-  }
+        It spec1 = () =>
+        {
+        };
 
-  [Tags(tag.example, tag.some_other_tag, tag.one_more_tag)]
-  public class context_with_tags
-  {
-    It bla_bla = () => { };
-  }
+        It spec2 = () =>
+        {
+        };
+    }
 
-  [Ignore]
-  public class context_with_ignore : context_with_no_specs
-  {
-    public static bool IgnoredSpecRan;
+    [Tags(tag.example, tag.example)]
+    [Tags(tag.example)]
+    public class context_with_duplicate_tags
+    {
+        It bla_bla = () =>
+        {
+        };
+    }
 
-    It should_be_ignored = () =>
-      IgnoredSpecRan = true;
-  }
-
-  public class context_with_ignore_on_one_spec : context_with_no_specs
-  {
-    public static bool IgnoredSpecRan;
+    [Tags(tag.example, tag.some_other_tag, tag.one_more_tag)]
+    public class context_with_tags
+    {
+        It bla_bla = () =>
+        {
+        };
+    }
 
     [Ignore]
-    It should_be_ignored = () =>
-      IgnoredSpecRan = true;
-  }
-
-  [Tags(tag.example)]
-  public class context_with_no_specs
-  {
-    public static bool ContextEstablished;
-    public static bool CleanupOccurred;
-
-    Establish context = () =>
+    public class context_with_ignore : context_with_no_specs
     {
-      ContextEstablished = true;
-    };
+        public static bool IgnoredSpecRan;
 
-    Cleanup after_each = () =>
+        It should_be_ignored = () =>
+                               IgnoredSpecRan = true;
+    }
+
+    public class context_with_ignore_on_one_spec : context_with_no_specs
     {
-      CleanupOccurred = true;
-    };
-  }
+        public static bool IgnoredSpecRan;
 
-  [Subject(typeof(int), "Some description")]
-  [Tags(tag.example)]
-  public class context_with_subject
-  {
-  }
+        [Ignore] It should_be_ignored = () =>
+                                        IgnoredSpecRan = true;
+    }
 
-  [Tags(tag.example)]
-  public class context_with_failing_specs
-  {
-    It should = () => { throw new InvalidOperationException("something went wrong"); };
-  }
-
-  [Tags(tag.example)]
-  public class context_with_failing_establish
-  {
-    Establish context = () => { throw new InvalidOperationException("something went wrong"); };
-    It should = () => { };
-  }
-
-  [Tags(tag.example)]
-  public class context_with_failing_because
-  {
-    Because of = () => { throw new InvalidOperationException("something went wrong"); };
-    It should = () => { };
-  }
-
-  [Tags(tag.example)]
-  public class context_with_console_output
-  {
-    Establish context = () =>
+    [Tags(tag.example)]
+    public class context_with_no_specs
     {
-      Console.Out.WriteLine("Console.Out message in establish");
-      Console.Error.WriteLine("Console.Error message in establish");
-    };
+        public static bool ContextEstablished;
+        public static bool CleanupOccurred;
 
-    Because of = () =>
+        Establish context = () =>
+        {
+            ContextEstablished = true;
+        };
+
+        Cleanup after_each = () =>
+        {
+            CleanupOccurred = true;
+        };
+    }
+
+    [Subject(typeof (int), "Some description")]
+    [Tags(tag.example)]
+    public class context_with_subject
     {
-      Console.Out.WriteLine("Console.Out message in because");
-      Console.Error.WriteLine("Console.Error message in because");
-    };
+    }
 
-    Cleanup after = () =>
+    [Tags(tag.example)]
+    public class context_with_failing_specs
     {
-      Console.Out.WriteLine("Console.Out message in cleanup");
-      Console.Error.WriteLine("Console.Error message in cleanup");
-    };
+        It should = () =>
+        {
+            throw new InvalidOperationException("something went wrong");
+        };
+    }
 
-    It should_log_messages = () =>
+    [Tags(tag.example)]
+    public class context_with_failing_establish
     {
-      Console.Out.WriteLine("Console.Out message in spec");
-      Console.Error.WriteLine("Console.Error message in spec");
-    };
+        Establish context = () =>
+        {
+            throw new InvalidOperationException("something went wrong");
+        };
 
-    It should_log_messages_also_for_the_nth_run = () =>
+        It should = () =>
+        {
+        };
+    }
+
+    [Tags(tag.example)]
+    public class context_with_failing_because
     {
-      Console.Out.WriteLine("Console.Out message in spec");
-      Console.Error.WriteLine("Console.Error message in spec");
-    };
-  }
+        Because of = () =>
+        {
+            throw new InvalidOperationException("something went wrong");
+        };
 
-  [Tags(tag.example)]
-  public class context_with_inner_exception
-  {
-    It should_throw = () =>
+        It should = () =>
+        {
+        };
+    }
+
+    [Tags(tag.example)]
+    public class context_with_console_output
     {
-      try
-      {
-        throw new Exception("INNER123");
+        Establish context = () =>
+        {
+            Console.Out.WriteLine("Console.Out message in establish");
+            Console.Error.WriteLine("Console.Error message in establish");
+        };
 
-      }
-      catch (Exception err)
-      {
-        throw new TargetInvocationException(err);
-      }
-    };
-  }
+        Because of = () =>
+        {
+            Console.Out.WriteLine("Console.Out message in because");
+            Console.Error.WriteLine("Console.Error message in because");
+        };
 
-  [SetupForEachSpecification, Tags(tag.example)]
-  public class context_with_console_output_and_for_each
-  {
-    Establish context = () =>
+        Cleanup after = () =>
+        {
+            Console.Out.WriteLine("Console.Out message in cleanup");
+            Console.Error.WriteLine("Console.Error message in cleanup");
+        };
+
+        It should_log_messages = () =>
+        {
+            Console.Out.WriteLine("Console.Out message in spec");
+            Console.Error.WriteLine("Console.Error message in spec");
+        };
+
+        It should_log_messages_also_for_the_nth_run = () =>
+        {
+            Console.Out.WriteLine("Console.Out message in spec");
+            Console.Error.WriteLine("Console.Error message in spec");
+        };
+    }
+
+    [Tags(tag.example)]
+    public class context_with_inner_exception
     {
-      Console.Out.WriteLine("Console.Out message in establish");
-      Console.Error.WriteLine("Console.Error message in establish");
-    };
+        It should_throw = () =>
+        {
+            try
+            {
+                throw new Exception("INNER123");
+            }
+            catch (Exception err)
+            {
+                throw new TargetInvocationException(err);
+            }
+        };
+    }
 
-    Because of = () =>
+    [SetupForEachSpecification, Tags(tag.example)]
+    public class context_with_console_output_and_for_each
     {
-      Console.Out.WriteLine("Console.Out message in because");
-      Console.Error.WriteLine("Console.Error message in because");
-    };
+        Establish context = () =>
+        {
+            Console.Out.WriteLine("Console.Out message in establish");
+            Console.Error.WriteLine("Console.Error message in establish");
+        };
 
-    Cleanup after_each = () =>
-    {
-      Console.Out.WriteLine("Console.Out message in cleanup");
-      Console.Error.WriteLine("Console.Error message in cleanup");
-    };
+        Because of = () =>
+        {
+            Console.Out.WriteLine("Console.Out message in because");
+            Console.Error.WriteLine("Console.Error message in because");
+        };
 
-    It should_log_messages = () =>
-    {
-      Console.Out.WriteLine("Console.Out message in spec");
-      Console.Error.WriteLine("Console.Error message in spec");
-    };
+        Cleanup after_each = () =>
+        {
+            Console.Out.WriteLine("Console.Out message in cleanup");
+            Console.Error.WriteLine("Console.Error message in cleanup");
+        };
 
-    It should_log_messages_also_for_the_nth_run = () =>
-    {
-      Console.Out.WriteLine("Console.Out message in spec");
-      Console.Error.WriteLine("Console.Error message in spec");
-    };
-  }
+        It should_log_messages = () =>
+        {
+            Console.Out.WriteLine("Console.Out message in spec");
+            Console.Error.WriteLine("Console.Error message in spec");
+        };
+
+        It should_log_messages_also_for_the_nth_run = () =>
+        {
+            Console.Out.WriteLine("Console.Out message in spec");
+            Console.Error.WriteLine("Console.Error message in spec");
+        };
+    }
 }
