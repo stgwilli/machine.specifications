@@ -50,6 +50,11 @@ namespace Machine.Specifications.Factories
 
             var becauseClauses = ExtractPrivateFieldValues<Because>(instance);
             becauseClauses.Reverse();
+            
+            if (becauseClauses.Count > 2)
+            {
+               throw new SpecificationUsageException("There can only be one Because clause.");
+            }
 
             var concern = ExtractSubject(type);
             var isSetupForEachSpec = IsSetupForEachSpec(type);
