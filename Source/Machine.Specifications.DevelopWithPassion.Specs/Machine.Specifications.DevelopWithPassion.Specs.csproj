@@ -64,6 +64,7 @@
     <Compile Include="SutObservationContractSpecs.cs" />
     <Compile Include="SystemUnderTestDependencyBuilderSpecs.cs" />
     <Compile Include="SystemUnderTestFactorySpecs.cs" />
+    <Compile Include="TestStateSpecs.cs" />
     <Compile Include="TypeCastingExtensionsSpecs.cs" />
     <Compile Include="TypeExtensionsSpecs.cs" />
   </ItemGroup>

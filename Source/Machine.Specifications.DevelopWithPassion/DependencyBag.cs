@@ -56,8 +56,8 @@ namespace Machine.Specifications.DevelopWithPassion
         public SUT setup()
         {
             run_startup_pipeline();
-            run_startup_pipeline_that_requires_sut();
             build_sut();
+            run_startup_pipeline_that_requires_sut();
             return sut;
         }
 
