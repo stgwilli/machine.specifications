@@ -46,6 +46,7 @@ namespace Machine.Specifications.ConsoleRunner
 
       var timingListener = new TimingRunListener();
       listeners.Add(timingListener);
+      listeners.Add(new AssemblyLocationAwareListener());
 
       ISpecificationRunListener mainListener;
       if (options.TeamCityIntegration)
@@ -79,7 +80,7 @@ namespace Machine.Specifications.ConsoleRunner
         {
           if (IsHtmlPathValid(options.XmlPath))
           {
-            listeners.Add(GetXmlReportListener(options));
+            listeners.Add(GetXmlReportListener(options, timingListener));
           }
           else
           {
@@ -123,18 +124,17 @@ namespace Machine.Specifications.ConsoleRunner
       if (mainListener is ISpecificationResultProvider)
       {
         var errorProvider = (ISpecificationResultProvider)mainListener;
-        if (errorProvider.FailureOccured)
+        if (errorProvider.FailureOccurred)
         {
-          Console.WriteLine("Generic failure occurred, no idea what this is");
           return ExitCode.Failure;
         }
       }
       return ExitCode.Success;
     }
 
-    private static ISpecificationRunListener GetXmlReportListener(Options options)
+    private static ISpecificationRunListener GetXmlReportListener(Options options, TimingRunListener timer)
     {
-      var listener = new GenerateXmlReportListener(options.XmlPath, options.ShowTimeInformation);
+      var listener = new GenerateXmlReportListener(options.XmlPath, timer, options.ShowTimeInformation);
 
       return listener;
     }

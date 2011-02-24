@@ -1,36 +1,33 @@
 using System;
+
 using Machine.Specifications.Runner;
 using Machine.Specifications.Runner.Impl;
 
 namespace Machine.Specifications.Reporting.Integration
 {
-
   public class TeamCityReporter : ISpecificationRunListener, ISpecificationResultProvider
   {
     readonly TimingRunListener _timingListener;
 
     readonly TeamCityServiceMessageWriter _writer;
-    string _currentAssembly;
     string _currentContext;
     string _currentNamespace;
-    bool _failureOccured;
-    //string _failures;
+    bool _failureOccurred;
 
     public TeamCityReporter(Action<string> writer, TimingRunListener listener)
     {
       _timingListener = listener;
-      _failureOccured = false;
+      _failureOccurred = false;
       _writer = new TeamCityServiceMessageWriter(writer);
     }
 
-    protected string GetSpecificationName(SpecificationInfo specification)
+    public bool FailureOccurred
     {
-      return _currentContext + " > " + specification.Name;
+      get { return _failureOccurred; }
     }
 
     public void OnAssemblyStart(AssemblyInfo assembly)
     {
-      _currentAssembly = assembly.Name;
       _writer.WriteProgressStart("Running specifications in " + assembly.Name);
     }
 
@@ -41,7 +38,6 @@ namespace Machine.Specifications.Reporting.Integration
         _writer.WriteTestSuiteFinished(_currentNamespace);
       }
       _writer.WriteProgressFinish("Running specifications in " + assembly.Name);
-      _currentAssembly = "";
     }
 
     public void OnRunStart()
@@ -93,14 +89,15 @@ namespace Machine.Specifications.Reporting.Integration
         default:
           if (result.Exception != null)
           {
-            _writer.WriteTestFailed(GetSpecificationName(specification), 
-             result.Exception.Message, result.Exception.ToString());
+            _writer.WriteTestFailed(GetSpecificationName(specification),
+                                    result.Exception.Message,
+                                    result.Exception.ToString());
           }
           else
           {
             _writer.WriteTestFailed(GetSpecificationName(specification), "FAIL", "");
           }
-          _failureOccured = true;
+          _failureOccurred = true;
           break;
       }
       var duration = TimeSpan.FromMilliseconds(_timingListener.GetSpecificationTime(specification));
@@ -111,12 +108,12 @@ namespace Machine.Specifications.Reporting.Integration
     public void OnFatalError(ExceptionResult exception)
     {
       _writer.WriteError(exception.Message, exception.ToString());
-      _failureOccured = true;
+      _failureOccurred = true;
     }
 
-    public bool FailureOccured
+    protected string GetSpecificationName(SpecificationInfo specification)
     {
-      get { return _failureOccured; }
+      return _currentContext + " > " + specification.Name;
     }
   }
 }

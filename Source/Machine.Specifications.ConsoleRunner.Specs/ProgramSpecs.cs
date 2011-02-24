@@ -46,6 +46,9 @@ namespace Machine.Specifications.ConsoleRunner.Specs
 
     It should_write_the_count_of_specifications = ()=>
       console.ShouldContainLineWith("Specifications: 6");
+    
+    It should_write_the_run_time = ()=>
+      console.ShouldContainLineWith("Time: ");
   }
 
   [Subject("Console runner")]
@@ -114,6 +117,21 @@ namespace Machine.Specifications.ConsoleRunner.Specs
 
     It should_not_execute_specs_that_are_not_included = () =>
       console.ShouldNotContainLineWith("Account Funds transfer, when transferring between two accounts");
+  }
+
+  [Subject("Console runner")]
+  public class when_running_from_directory_different_from_assembly_location : ConsoleRunnerSpecs
+  {
+    Because of = () =>
+      program.Run(new[] { GetPath(@"ExternalFile\Machine.Specifications.Example.UsingExternalFile.dll") });
+
+    It should_pass_the_specification_which_depends_on_external_file = () =>
+      console.Lines.ShouldContain(
+        "External resources usage, when using file copied to assembly output directory", 
+        "» should be able to locate it by relative path");
+
+    It should_pass_all_specifications = () =>
+      console.ShouldNotContainLineWith("failed");
   }
 
   public class ConsoleRunnerSpecs

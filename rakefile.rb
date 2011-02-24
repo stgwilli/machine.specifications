@@ -18,7 +18,7 @@ task :configure do
       :friendly_name => 'net-3.5',
       :version => 'v3.5',
       :project => project,
-      :solution => project,
+      :solution => "#{project}-2010",
       :target => target,
       :compile_target => target,
       :out_dir => "Build/#{target}/",
@@ -35,7 +35,6 @@ task :configure do
       :out_dir => "Build/#{target}/",
       :package_name => "Distribution/#{project}-net-4.0-#{target}.zip",
       :nunit_framework => "net-3.5",
-      :exclude_from_package => "InstallResharperRunner.4*.*",
       :additional_specs => ["Machine.Specifications.Example.Clr4.dll"],
     }
   }
@@ -86,7 +85,7 @@ namespace :specs do
 
   task :run do
     puts 'Running Specs...'
-    specs = ["Machine.Specifications.Specs.dll", "Machine.Specifications.Reporting.Specs.dll", "Machine.Specifications.ConsoleRunner.Specs.dll","Machine.Specifications.DevelopWithPassion.Specs.dll"]
+    specs = ["Machine.Specifications.Specs.dll", "Machine.Specifications.Reporting.Specs.dll", "Machine.Specifications.ConsoleRunner.Specs.dll"]
     specs = specs | configatron.additional_specs if configatron.exists?(:additional_specs)
     specs.map! {|spec| "#{configatron.out_dir}/Tests/#{spec}"}
     sh "#{configatron.out_dir}/mspec.exe", "--html", "Specs/#{configatron.project}.Specs.html", "-x", "example", *(mspec_options + specs)
@@ -115,23 +114,32 @@ task :package => [ "rebuild", "tests:run", "specs:run" ] do
   rm_f configatron.package_name
   
   cp 'License.txt', configatron.out_dir
-  cp_r 'Distribution/Specifications/.', configatron.out_dir
   
   sz = SevenZip.new \
     :tool => 'Tools/7-Zip/7za.exe',
     :zip_name => configatron.package_name
 
-  files = FileList.new('**/*') \
+  Dir.chdir(configatron.out_dir) do
+    sz.zip :files => FileList.new('**/*') \
       .exclude('*.InstallLog') \
       .exclude('*.InstallState') \
       .exclude('Generation') \
-      .exclude('Tests') \
-  
-  files.exclude(configatron.exclude_from_package) if configatron.exists?(:exclude_from_package)
-
-  Dir.chdir(configatron.out_dir) do
-    sz.zip :files => files
+      .exclude('Tests')
   end
+end
+
+desc "Packages the build artifacts as a NuGet"
+task :nuget do
+  FileList.new("#{configatron.package_name.dirname}/*-Release.zip").each do |f|
+	version = f.split("-").values_at(1, 2).join.delete(".")
+
+	SevenZip.unzip \
+	  :tool => 'Tools/7-Zip/7za.exe',
+	  :zip_name => f,
+	  :destination => "Build/NuGet/#{version}".gsub(/\//, '\\')
+  end
+
+  sh "Tools/NUGet/NuGet.exe", "pack", "mspec.nuspec", "-BasePath", "Build/NuGet", "-OutputDirectory", "Distribution"
 end
 
 desc "TeamCity build"

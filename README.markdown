@@ -3,7 +3,9 @@ Machine.Specifications (MSpec)
 
 *NOTE: Machine.Specifications.NUnit and Machine.Specifications.XUnit are now deprecated. Please remove them from your projects.*
 
-Most recent build [available here](http://teamcity.codebetter.com/guestAuth/repository/download/bt44/.lastSuccessful/Machine.Specifications-release.zip).
+The most recent build for [.NET 3.5](http://teamcity.codebetter.com/guestAuth/repository/download/bt44/.lastSuccessful/Machine.Specifications-net-3.5-Release.zip)
+and [.NET 4.0](http://teamcity.codebetter.com/guestAuth/repository/download/bt188/.lastSuccessful/Machine.Specifications-net-4.0-Release.zip)
+is available at [CodeBetter](http://teamcity.codebetter.com/project.html?projectId=project27).
 
 Machine.Specifications is a Context/Specification framework geared towards removing language noise and simplifying tests. All it asks is that you accept the `=()=>`.
 
@@ -37,7 +39,9 @@ The solution file is located, relative to the root of the repo, at `Source\Machi
 
 MSpec has a Continuous Integration setup, provided by [CodeBetter](http://www.codebetter.com) and running on TeamCity.
 
-If you'd like to skip the above steps and just want the binaries for MSpec, you can get the zip of the latest successful CI build at [this link](http://teamcity.codebetter.com/guestAuth/repository/download/bt44/.lastSuccessful/Machine.Specifications-release.zip).
+If you'd like to skip the above steps and just want the binaries for MSpec, get the zip of the latest successful CI build for
+[.NET 3.5](http://teamcity.codebetter.com/guestAuth/repository/download/bt44/.lastSuccessful/Machine.Specifications-net-3.5-Release.zip)
+and [.NET 4.0](http://teamcity.codebetter.com/guestAuth/repository/download/bt188/.lastSuccessful/Machine.Specifications-net-4.0-Release.zip).
 
 ### How stuff works
 
@@ -101,7 +105,16 @@ This option behaves the same as the `--html` option, in terms of filename behavi
 
 ##### Using InstallResharperRunner*.bat
 
-MSpec provides a batch file for each of the three versions of ReSharper it supports, 4.1, 4.5, 5.0.
+MSpec provides a batch file for each of the four versions of ReSharper it supports, 4.1, 4.5, 5.0 and 5.1.
+
+##### Preventing ReSharper from marking specifications as unused
+
+By default, ReSharper will think that specification classes (those marked with the [Subject] attribute), and their internals are unused.  To change this behavior in Visual Studio:
+
+1. Open the ReSharper Options (ReSharper -> Options...)
+2. Select "Code Annotations"
+3. Ensure that the namespace "Machine.Specifications.Annotations" is checked
+4. Click "OK"
 
 #### TestDriven.Net
 
@@ -121,7 +134,7 @@ After following these steps, MSpec-based Contexts and Specifications can be ran 
 
 TestDriven.Net versions 2.24 and newer support an XCopy deployment model that simplifies the plugin deployment process and negates the versioning issues that arise from using the registry-based scheme used in `InstallTDNetRunner.bat`.
 
-All that needs to be done is to make sure that the `Machine.Specifications.dll.tdnet` file that is deployed as part of `Machine.Specifications.TDNetRunner.csproj` is in the same directory as your MSpec binaries.
+All that needs to be done is to make sure that the `Machine.Specifications.dll.tdnet` file that is deployed as part of the zip downloads and `Machine.Specifications.TDNetRunner.csproj` is in the same directory as your MSpec binaries.
 
 ## Guidelines
 

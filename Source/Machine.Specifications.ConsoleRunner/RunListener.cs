@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 
-using Machine.Specifications.ConsoleRunner.Properties;
 using Machine.Specifications.Runner;
 using Machine.Specifications.Runner.Impl;
 
@@ -12,23 +9,26 @@ namespace Machine.Specifications.ConsoleRunner
   {
     readonly IConsole _console;
     readonly bool _silent;
-    string _currentAssemblyName;
+    readonly TimingRunListener _timer;
     int _contextCount;
+    string _currentAssemblyName;
     int _specificationCount;
-    int _failedSpecificationCount;
-    int _unimplementedSpecificationCount;
-    int _ignoredSpecificationCount;
     int _passedSpecificationCount;
+    int _failedSpecificationCount;
+    bool _failureOccurred;
+    int _ignoredSpecificationCount;
+    int _unimplementedSpecificationCount;
 
-    public bool FailureOccured
-    {
-      get; private set;
-    }
-
-    public RunListener(IConsole console, bool silent, TimingRunListener listener)
+    public RunListener(IConsole console, bool silent, TimingRunListener timer)
     {
       _console = console;
       _silent = silent;
+      _timer = timer;
+    }
+
+    public bool FailureOccurred
+    {
+      get { return _failureOccurred || _failedSpecificationCount > 0; }
     }
 
     public void OnAssemblyStart(AssemblyInfo assembly)
@@ -55,11 +55,14 @@ namespace Machine.Specifications.ConsoleRunner
 
     public void OnRunEnd()
     {
-      var line = String.Format("Contexts: {0}, Specifications: {1}", _contextCount, _specificationCount);
-      
+      var line = String.Format("Contexts: {0}, Specifications: {1}, Time: {2:s\\.ff} seconds",
+                               _contextCount,
+                               _specificationCount,
+                               FormattableTimeSpan(_timer.GetRunTime()));
+
       if (_failedSpecificationCount > 0 || _unimplementedSpecificationCount > 0)
       {
-        line += String.Format("\n  {0} passed, {1} failed", _passedSpecificationCount,_failedSpecificationCount);
+        line += String.Format("\n  {0} passed, {1} failed", _passedSpecificationCount, _failedSpecificationCount);
         if (_unimplementedSpecificationCount > 0)
         {
           line += String.Format(", {0} not implemented", _unimplementedSpecificationCount);
@@ -69,6 +72,12 @@ namespace Machine.Specifications.ConsoleRunner
           line += String.Format(", {0} ignored", _ignoredSpecificationCount);
         }
       }
+
+      if (_failureOccurred)
+      {
+        line += "\n\nGeneric failure occurred, no idea what this is";
+      }
+
       _console.WriteLine(line);
     }
 
@@ -91,7 +100,7 @@ namespace Machine.Specifications.ConsoleRunner
     public void OnSpecificationEnd(SpecificationInfo specification, Result result)
     {
       _specificationCount += 1;
-      switch(result.Status)
+      switch (result.Status)
       {
         case Status.Passing:
           _passedSpecificationCount += 1;
@@ -107,7 +116,6 @@ namespace Machine.Specifications.ConsoleRunner
           break;
         default:
           _failedSpecificationCount += 1;
-          FailureOccured = true;
           WriteLineVerbose(" (FAIL)");
           WriteLineVerbose(result.Exception.ToString());
           break;
@@ -116,19 +124,31 @@ namespace Machine.Specifications.ConsoleRunner
 
     public void OnFatalError(ExceptionResult exception)
     {
-      FailureOccured = true;
+      _failureOccurred = true;
       _console.WriteLine("Fatal Error");
       _console.WriteLine(exception.ToString());
+      _console.WriteLine("");
+    }
+
+    static DateTime FormattableTimeSpan(long milliseconds)
+    {
+      return DateTime.MinValue + TimeSpan.FromMilliseconds(milliseconds);
     }
 
     void WriteVerbose(string str)
     {
-      if (!_silent) _console.Write(str);
+      if (!_silent)
+      {
+        _console.Write(str);
+      }
     }
 
     void WriteLineVerbose(string str)
     {
-      if (!_silent) _console.WriteLine(str);
+      if (!_silent)
+      {
+        _console.WriteLine(str);
+      }
     }
   }
 }

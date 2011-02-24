@@ -5,6 +5,12 @@ namespace Machine.Specifications.DevelopWithPassion.Extensions
 {
     public static class AssertionExtensions
     {
+        public static T ShouldBeAn<T>(this object result)
+        {
+            result.ShouldBe(typeof(T));
+            return (T) result;
+        }
+
         public static void ShouldContainOnlyInOrder<T>(this IEnumerable<T> items, params T[] ordered_items)
         {
             items.ShouldContainOnlyInOrder((IEnumerable<T>) ordered_items);

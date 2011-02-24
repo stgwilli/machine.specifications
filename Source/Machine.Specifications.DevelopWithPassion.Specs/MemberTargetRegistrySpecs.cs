@@ -1,5 +1,6 @@
 using System.Reflection;
 using Machine.Specifications.DevelopWithPassion.DSL.FieldSwitching;
+using Machine.Specifications.DevelopWithPassion.Extensions;
 using Machine.Specifications.DevelopWithPassion.Rhino;
 
 namespace Machine.Specifications.DevelopWithPassion.Specs

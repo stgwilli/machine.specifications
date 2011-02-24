@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Diagnostics;
+using Machine.Specifications.DevelopWithPassion.Extensions;
 using Machine.Specifications.DevelopWithPassion.Observations;
 using Machine.Specifications.DevelopWithPassion.Rhino;
 
