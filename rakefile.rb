@@ -85,7 +85,7 @@ namespace :specs do
 
   task :run do
     puts 'Running Specs...'
-    specs = ["Machine.Specifications.Specs.dll", "Machine.Specifications.Reporting.Specs.dll", "Machine.Specifications.ConsoleRunner.Specs.dll"]
+    specs = %w[Machine.Specifications.Specs.dll Machine.Specifications.Reporting.Specs.dll Machine.Specifications.ConsoleRunner.Specs.dll Machine.Specifications.DevelopWithPassion.Specs.dll]
     specs = specs | configatron.additional_specs if configatron.exists?(:additional_specs)
     specs.map! {|spec| "#{configatron.out_dir}/Tests/#{spec}"}
     sh "#{configatron.out_dir}/mspec.exe", "--html", "Specs/#{configatron.project}.Specs.html", "-x", "example", *(mspec_options + specs)
